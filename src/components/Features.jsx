@@ -1,221 +1,254 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 const Features = () => {
+    const fadeInUp = {
+        hidden: { opacity: 0, y: 60 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+    };
+
+    const staggerContainer = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.2
+            }
+        }
+    };
+
     return (
-        <div style={{ position: 'relative', zIndex: 10, background: '#f9f9f9', color: '#333' }}>
+        <div style={{ position: 'relative', zIndex: 10, background: '#050505', color: 'white' }}>
+
+            {/* Background Gradients */}
+            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', overflow: 'hidden', pointerEvents: 'none' }}>
+                <div style={{ position: 'absolute', top: '10%', right: '-10%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(67, 97, 238, 0.15) 0%, transparent 70%)', filter: 'blur(60px)' }}></div>
+                <div style={{ position: 'absolute', bottom: '10%', left: '-10%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(123, 44, 191, 0.1) 0%, transparent 70%)', filter: 'blur(60px)' }}></div>
+            </div>
 
             {/* Section 1: The Solution */}
-            <div id="solution" className="container" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '5rem 2rem' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center', width: '100%' }}>
+            <div id="solution" className="container" style={{ minHeight: '90vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8rem 2rem' }}>
+                <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-100px" }}
+                    variants={staggerContainer}
+                    style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6rem', alignItems: 'center', width: '100%' }}
+                >
                     <div style={{ textAlign: 'left' }}>
-                        <div style={{
+                        <motion.div variants={fadeInUp} style={{
                             display: 'inline-block',
                             padding: '0.5rem 1rem',
                             borderRadius: '50px',
-                            background: '#dbeafe',
-                            color: '#1e40af',
+                            background: 'rgba(67, 97, 238, 0.1)',
+                            border: '1px solid rgba(67, 97, 238, 0.3)',
+                            color: '#4361EE',
                             fontSize: '0.8rem',
                             fontWeight: 'bold',
-                            marginBottom: '1rem'
+                            marginBottom: '1.5rem'
                         }}>
                             THE SOLUTION
-                        </div>
-                        <h2 style={{ fontSize: '3rem', marginBottom: '2rem', color: '#111827', lineHeight: '1.2' }}>
-                            Natural-Language<br />Video Editing
-                        </h2>
-                        <div style={{ width: '50px', height: '3px', background: '#3b82f6', marginBottom: '2rem' }}></div>
-                        <p style={{ fontSize: '1.1rem', lineHeight: '1.8', color: '#4b5563' }}>
+                        </motion.div>
+                        <motion.h2 variants={fadeInUp} style={{ fontSize: '3.5rem', marginBottom: '2rem', lineHeight: '1.1', letterSpacing: '-0.02em' }}>
+                            Natural-Language<br />
+                            <span className="gradient-text">Video Editing</span>
+                        </motion.h2>
+                        <motion.div variants={fadeInUp} style={{ width: '60px', height: '4px', background: 'linear-gradient(90deg, #4361EE, #7B2CBF)', marginBottom: '2rem', borderRadius: '2px' }}></motion.div>
+                        <motion.p variants={fadeInUp} style={{ fontSize: '1.2rem', lineHeight: '1.8', color: '#aaa' }}>
                             PromptFlow AI is a natural-language video editor that lets creators skip hours of manual work by simply describing what they want. From smart cutting to automated VFX, just type your vision and let AI handle the execution.
-                        </p>
+                        </motion.p>
                     </div>
 
                     {/* Command Card */}
-                    <div style={{
-                        background: '#1f2937',
-                        borderRadius: '20px',
-                        height: '400px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
-                        padding: '2rem',
-                        position: 'relative',
-                        overflow: 'hidden'
-                    }}>
+                    <motion.div
+                        variants={fadeInUp}
+                        className="glass-card"
+                        style={{
+                            height: 'auto',
+                            minHeight: '400px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            position: 'relative',
+                        }}
+                    >
                         <div style={{
                             width: '100%',
-                            background: 'rgba(255,255,255,0.05)',
+                            background: 'rgba(0,0,0,0.3)',
                             padding: '1.5rem',
-                            borderRadius: '10px',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            borderRadius: '12px',
+                            border: '1px solid rgba(255,255,255,0.05)',
                             marginBottom: '2rem'
                         }}>
-                            <div style={{ fontSize: '0.8rem', color: '#9ca3af', marginBottom: '0.5rem' }}>PROMPT</div>
-                            <div style={{ color: '#60a5fa', fontFamily: 'monospace' }}>
+                            <div style={{ fontSize: '0.8rem', color: '#666', marginBottom: '0.8rem', letterSpacing: '0.1em' }}>PROMPT</div>
+                            <div style={{ color: '#A5B4FC', fontFamily: 'monospace', fontSize: '1.1rem' }}>
                                 "Remove the silence and add subtitles"
+                                <motion.span
+                                    animate={{ opacity: [0, 1, 0] }}
+                                    transition={{ duration: 1, repeat: Infinity }}
+                                    style={{ display: 'inline-block', width: '2px', height: '1.2em', background: '#A5B4FC', marginLeft: '5px', verticalAlign: 'middle' }}
+                                />
                             </div>
                         </div>
-                        <div style={{
-                            display: 'flex',
-                            gap: '1rem',
-                            color: '#10b981',
-                            fontSize: '0.9rem',
-                            alignItems: 'center',
-                            background: 'rgba(16, 185, 129, 0.1)',
-                            padding: '0.5rem 1rem',
-                            borderRadius: '50px'
-                        }}>
+                        <motion.div
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            whileInView={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 0.5, duration: 0.5 }}
+                            style={{
+                                display: 'flex',
+                                gap: '1rem',
+                                color: '#4ade80',
+                                fontSize: '1rem',
+                                alignItems: 'center',
+                                background: 'rgba(74, 222, 128, 0.1)',
+                                padding: '0.8rem 1.5rem',
+                                borderRadius: '50px',
+                                border: '1px solid rgba(74, 222, 128, 0.2)'
+                            }}
+                        >
                             <span>✓</span>
-                            <span>Processing Complete</span>
-                        </div>
-                    </div>
-                </div>
+                            <span style={{ fontWeight: 600 }}>Processing Complete</span>
+                        </motion.div>
+                    </motion.div>
+                </motion.div>
             </div>
 
             {/* Section 2: Efficiency / Creator Impact */}
-            <div id="benefits" style={{ background: '#f3f4f6', padding: '5rem 0 8rem 0' }}>
+            <div id="benefits" style={{ padding: '5rem 0 8rem 0', position: 'relative' }}>
                 <div className="container">
-                    <div style={{
-                        background: 'white',
-                        borderRadius: '30px',
-                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.05)',
-                        padding: '4rem',
-                        display: 'grid',
-                        gridTemplateColumns: '1fr 1fr',
-                        gap: '4rem',
-                        alignItems: 'center'
-                    }}>
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: "-100px" }}
+                        variants={fadeInUp}
+                        className="glass-card"
+                        style={{
+                            padding: '5rem',
+                            display: 'grid',
+                            gridTemplateColumns: '1.2fr 0.8fr',
+                            gap: '5rem',
+                            alignItems: 'center',
+                            background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)'
+                        }}
+                    >
 
                         {/* Left: Metrics */}
                         <div>
-                            <div style={{ fontSize: '0.9rem', fontWeight: 'bold', letterSpacing: '0.1em', color: '#7c3aed', marginBottom: '1rem' }}>EFFICIENCY</div>
-                            <div style={{ fontSize: '5rem', fontWeight: 'bold', lineHeight: '1', color: '#111827' }}>5+ Hours</div>
-                            <div style={{ fontSize: '1.2rem', color: '#6b7280', marginBottom: '2rem' }}>Saved per week</div>
+                            <div style={{ fontSize: '0.9rem', fontWeight: 'bold', letterSpacing: '0.2em', color: '#A5B4FC', marginBottom: '1rem' }}>EFFICIENCY</div>
+                            <h3 style={{ fontSize: '5rem', fontWeight: 'bold', lineHeight: '1', marginBottom: '0.5rem' }} className="gradient-text">5+ Hours</h3>
+                            <div style={{ fontSize: '1.5rem', color: '#888', marginBottom: '3rem' }}>Saved per week</div>
 
-                            <div style={{ display: 'flex', gap: '1rem', marginBottom: '3rem' }}>
+                            <div style={{ display: 'flex', gap: '1rem', marginBottom: '3rem', flexWrap: 'wrap' }}>
                                 {['No Manual Cuts', 'Auto-VFX', 'Smart Audio'].map(tag => (
                                     <span key={tag} style={{
-                                        padding: '0.5rem 1rem',
+                                        padding: '0.6rem 1.2rem',
                                         borderRadius: '50px',
-                                        border: '1px solid #e5e7eb',
-                                        fontSize: '0.8rem',
-                                        fontWeight: '600',
-                                        color: '#374151'
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        background: 'rgba(255,255,255,0.03)',
+                                        fontSize: '0.9rem',
+                                        fontWeight: '500',
+                                        color: '#ccc'
                                     }}>{tag}</span>
                                 ))}
                             </div>
 
-                            <div style={{ marginBottom: '2rem' }}>
-                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1rem' }}>
-                                    <div style={{ background: '#ddd6fe', color: '#5b21b6', borderRadius: '50%', padding: '0.2rem', fontSize: '0.8rem' }}>✓</div>
+                            <div style={{ marginBottom: '3rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1.5rem' }}>
+                                    <div style={{ background: 'rgba(123, 44, 191, 0.2)', color: '#C4B5FD', borderRadius: '50%', padding: '0.2rem', fontSize: '0.8rem', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✓</div>
                                     <div>
-                                        <div style={{ fontWeight: 'bold', color: '#1f2937' }}>Reclaim Creative Time</div>
-                                        <div style={{ fontSize: '0.9rem', color: '#6b7280', marginTop: '0.2rem' }}>Let AI handle the grunt work while you focus on the story.</div>
+                                        <div style={{ fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '0.3rem' }}>Reclaim Creative Time</div>
+                                        <div style={{ fontSize: '0.95rem', color: '#888' }}>Let AI handle the grunt work while you focus on the story.</div>
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                                    <div style={{ background: '#ddd6fe', color: '#5b21b6', borderRadius: '50%', padding: '0.2rem', fontSize: '0.8rem' }}>✓</div>
+                                    <div style={{ background: 'rgba(123, 44, 191, 0.2)', color: '#C4B5FD', borderRadius: '50%', padding: '0.2rem', fontSize: '0.8rem', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✓</div>
                                     <div>
-                                        <div style={{ fontWeight: 'bold', color: '#1f2937' }}>Professional Consistency</div>
-                                        <div style={{ fontSize: '0.9rem', color: '#6b7280', marginTop: '0.2rem' }}>Perfect cuts and timing, every single time.</div>
+                                        <div style={{ fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '0.3rem' }}>Professional Consistency</div>
+                                        <div style={{ fontSize: '0.95rem', color: '#888' }}>Perfect cuts and timing, every single time.</div>
                                     </div>
                                 </div>
                             </div>
 
-                            <button style={{
-                                width: '100%',
-                                padding: '1.2rem',
-                                background: '#000',
-                                color: 'white',
-                                borderRadius: '15px',
-                                fontSize: '1.2rem',
-                                fontWeight: 'bold',
-                                border: 'none',
-                                cursor: 'pointer'
-                            }}>
+                            <button className="btn-primary" style={{ width: '100%', fontSize: '1.1rem' }}>
                                 Join Waitlist
                             </button>
                         </div>
 
                         {/* Right: Graphic */}
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                            <div style={{
-                                width: '200px',
-                                height: '200px',
-                                background: '#eff6ff',
-                                borderRadius: '50%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                marginBottom: '2rem'
-                            }}>
-                                {/* Clock Icon Placeholder */}
-                                <div style={{ fontSize: '4rem' }}>⏱️</div>
-                            </div>
-                            <p style={{ color: '#6b7280', maxWidth: '300px' }}>
+                            <motion.div
+                                animate={{ y: [0, -15, 0] }}
+                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                style={{
+                                    width: '220px',
+                                    height: '220px',
+                                    background: 'linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(123, 44, 191, 0.1))',
+                                    borderRadius: '50%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    marginBottom: '2rem',
+                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    boxShadow: '0 0 50px rgba(67, 97, 238, 0.1)'
+                                }}
+                            >
+                                <div style={{ fontSize: '5rem' }}>⏱️</div>
+                            </motion.div>
+                            <p style={{ color: '#aaa', maxWidth: '300px', fontStyle: 'italic', fontSize: '1.1rem' }}>
                                 "AI handles the repetitive parts, humans get involved for creativity."
                             </p>
-                            <p style={{ fontSize: '0.9rem', fontWeight: 'bold', marginTop: '0.5rem', color: '#4b5563' }}>- Vibhav Sisinty</p>
+                            <p style={{ fontSize: '0.9rem', fontWeight: 'bold', marginTop: '1rem', color: '#6366f1' }}>- Vibhav Sisinty</p>
                         </div>
 
-                    </div>
+                    </motion.div>
                 </div>
             </div>
 
             {/* Section 3: Footer */}
-            <footer style={{ background: '#0f172a', color: 'white', padding: '5rem 0 2rem 0' }}>
-                <div className="container" style={{ textAlign: 'center', marginBottom: '4rem' }}>
-                    <p style={{ letterSpacing: '0.2em', fontSize: '0.8rem', opacity: 0.6, marginBottom: '1.5rem' }}>JOIN THE REVOLUTION</p>
-                    <button style={{
-                        padding: '1rem 3rem',
-                        borderRadius: '50px',
-                        background: 'white',
-                        color: 'black',
-                        border: 'none',
-                        fontWeight: 'bold',
-                        fontSize: '1.1rem',
-                        cursor: 'pointer'
-                    }}>
+            <footer id="contact" style={{ background: '#020204', color: 'white', padding: '5rem 0 2rem 0', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                <div className="container" style={{ textAlign: 'center', marginBottom: '5rem' }}>
+                    <p style={{ letterSpacing: '0.2em', fontSize: '0.9rem', opacity: 0.5, marginBottom: '2rem' }}>JOIN THE REVOLUTION</p>
+                    <button className="btn-primary" style={{ padding: '1.2rem 4rem', fontSize: '1.2rem' }}>
                         Get Early Access →
                     </button>
                 </div>
 
-                <div className="container" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1.5fr', gap: '3rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '4rem' }}>
+                <div className="container" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1.5fr', gap: '4rem', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '4rem' }}>
                     <div>
-                        <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', fontWeight: 'bold' }}>PromptFlow<span style={{ color: '#4361ee' }}> AI.</span></h3>
-                        <p style={{ fontSize: '0.9rem', color: '#94a3b8', lineHeight: '1.6' }}>
+                        <h3 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>PromptFlow<span style={{ color: '#4361ee' }}> AI.</span></h3>
+                        <p style={{ fontSize: '0.95rem', color: '#888', lineHeight: '1.6' }}>
                             Democratizing video editing by enabling anyone to create professional-quality content through simple prompts.
                         </p>
                     </div>
                     <div>
-                        <h4 style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>PRODUCT</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', fontSize: '0.9rem', color: '#cbd5e1' }}>
-                            <div>Features</div>
-                            <div>Pricing</div>
-                            <div>Docs</div>
-                            <div>API</div>
+                        <h4 style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '1.5rem', letterSpacing: '0.1em' }}>PRODUCT</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.95rem', color: '#aaa' }}>
+                            <a href="#" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }} className="hover:text-white">Features</a>
+                            <a href="#" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }} className="hover:text-white">Pricing</a>
+                            <a href="#" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }} className="hover:text-white">Docs</a>
+                            <a href="#" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }} className="hover:text-white">API</a>
                         </div>
                     </div>
                     <div>
-                        <h4 style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>COMPANY</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', fontSize: '0.9rem', color: '#cbd5e1' }}>
-                            <div>About</div>
-                            <div>Blog</div>
-                            <div>Careers</div>
-                            <div>Contact</div>
+                        <h4 style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '1.5rem', letterSpacing: '0.1em' }}>COMPANY</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.95rem', color: '#aaa' }}>
+                            <a href="#" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }} className="hover:text-white">About</a>
+                            <a href="#" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }} className="hover:text-white">Blog</a>
+                            <a href="#" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }} className="hover:text-white">Careers</a>
+                            <a href="#" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }} className="hover:text-white">Contact</a>
                         </div>
                     </div>
                     <div>
-                        <h4 style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>STAY UPDATED</h4>
+                        <h4 style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '1.5rem', letterSpacing: '0.1em' }}>STAY UPDATED</h4>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <input type="email" placeholder="Your email" style={{ padding: '0.8rem', borderRadius: '5px', border: '1px solid #334155', background: '#1e293b', color: 'white' }} />
-                            <button style={{ padding: '0.8rem', borderRadius: '5px', border: 'none', background: '#4361ee', color: 'white', fontWeight: 'bold', cursor: 'pointer' }}>Subscribe</button>
+                            <input type="email" placeholder="Your email" style={{ padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: 'white', fontSize: '0.9rem' }} />
+                            <button style={{ padding: '0.8rem', borderRadius: '8px', border: 'none', background: '#4361ee', color: 'white', fontWeight: 'bold', cursor: 'pointer', transition: 'background 0.3s' }}>Subscribe</button>
                         </div>
                     </div>
                 </div>
 
-                <div className="container" style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#64748b' }}>
+                <div className="container" style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: '#555' }}>
                     <div>© 2026 PromptFlow AI. All rights reserved.</div>
                     <div style={{ display: 'flex', gap: '2rem' }}>
                         <div>Privacy Policy</div>

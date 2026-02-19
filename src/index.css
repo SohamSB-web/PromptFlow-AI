@@ -4,10 +4,14 @@
   --accent-purple: #7B2CBF;
   --accent-blue: #4361EE;
   --accent-glow: rgba(123, 44, 191, 0.5);
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
+
+  /* Enhanced Glass Variables */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shine: rgba(255, 255, 255, 0.1);
+  --glass-blur: 16px;
+
   --font-heading: 'Outfit', sans-serif;
-  /* Fallback to sans-serif */
   --font-body: 'Inter', sans-serif;
 }
 
@@ -23,6 +27,10 @@ body {
   font-family: var(--font-body);
   overflow-x: hidden;
   line-height: 1.6;
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(67, 97, 238, 0.08), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(123, 44, 191, 0.08), transparent 25%);
+  background-attachment: fixed;
 }
 
 h1,
@@ -46,23 +54,51 @@ h6 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--accent-purple);
+  background: #333;
   border-radius: 4px;
 }
 
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-purple);
+}
+
+/* Glass Card - Enhanced */
 .glass-card {
   background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
-  border-radius: 16px;
+  border-top: 1px solid var(--glass-shine);
+  border-radius: 20px;
   padding: 2rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.05),
+      transparent);
+  transition: 0.5s;
+}
+
+.glass-card:hover::before {
+  left: 100%;
 }
 
 .glass-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px -10px var(--accent-glow);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(67, 97, 238, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .gradient-text {
@@ -72,30 +108,92 @@ h6 {
   -webkit-text-fill-color: transparent;
 }
 
+/* Buttons */
+/* Buttons */
 .btn-primary {
-  background: white;
+  background: transparent;
   color: black;
-  padding: 0.8rem 2rem;
+  padding: 1rem 2.5rem;
   border-radius: 50px;
   font-weight: 600;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  /* Creates a new stacking context */
+  transform: translateZ(0);
+  /* Fix for Safari border-radius clipping */
+}
+
+/* Base White Background */
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  z-index: -2;
+  transition: transform 0.3s ease;
+}
+
+/* Gradient Overlay */
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #A5B4FC, #C4B5FD);
+  z-index: -1;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+.btn-primary:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+  transition: transform 0.3s ease;
 }
 
 .btn-primary:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px) scale(1.05);
+  /* Use translateY instead of scale to avoid blurry text */
+  box-shadow: 0 0 30px rgba(165, 180, 252, 0.4);
+  transition: transform 0.3s ease;
 }
 
 .container {
   width: 100%;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 0 2rem;
 }
 
-/* Specific override for full-width hero if needed */
-.full-width {
-  max-width: none;
-  padding: 0;
+/* Animations */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+
+.glow-text {
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
