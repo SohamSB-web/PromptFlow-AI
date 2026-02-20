@@ -49,12 +49,12 @@ const Navbar = () => {
                 borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
             }}
         >
-            <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="container" style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.5 }}
-                    style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer' }}
+                    style={{ zIndex: 2, display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer' }}
                     whileHover={{ scale: 1.05 }}
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 >
@@ -73,7 +73,18 @@ const Navbar = () => {
                     <span style={{ fontSize: '1.2rem', fontWeight: 'bold', letterSpacing: '-0.02em' }}>PromptFlow AI</span>
                 </motion.div>
 
-                <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }} className="hidden-mobile">
+                <div
+                    className="hidden-mobile"
+                    style={{
+                        position: 'absolute',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        display: 'flex',
+                        gap: '2rem',
+                        alignItems: 'center',
+                        zIndex: 1
+                    }}
+                >
                     {['Solution', 'Benefits', 'Contact'].map((item, index) => {
                         const isActive = activeSection === item.toLowerCase();
                         return (
@@ -126,6 +137,7 @@ const Navbar = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.5 }}
+                    style={{ zIndex: 2 }}
                 >
                     <motion.button
                         whileHover={{
@@ -146,24 +158,31 @@ const Navbar = () => {
 
 // --- Hero Component ---
 const Hero = ({ scrollYProgress }) => {
-    // Scene 1: Initial (0 - 0.3)
-    const opacity1 = useTransform(scrollYProgress, [0, 0.2, 0.3], [1, 1, 0]);
-    const scale1 = useTransform(scrollYProgress, [0, 0.3], [1, 0.8]);
-    const pointerEvents1 = useTransform(scrollYProgress, (v) => v > 0.3 ? 'none' : 'auto');
+    // Scene 1: Initial (0 - 0.25)
+    // Starts visible, fades out as we scroll down
+    const opacity1 = useTransform(scrollYProgress, [0, 0.15, 0.25], [1, 1, 0]);
+    const scale1 = useTransform(scrollYProgress, [0, 0.25], [1, 1.1]);
+    const filter1 = useTransform(scrollYProgress, [0.15, 0.25], ["blur(0px)", "blur(10px)"]);
+    const y1 = useTransform(scrollYProgress, [0, 0.25], [0, -100]);
+    const pointerEvents1 = useTransform(scrollYProgress, (v) => v > 0.25 ? 'none' : 'auto');
 
-    // Scene 2: Middle (0.3 - 0.6)
-    const opacity2 = useTransform(scrollYProgress, [0.3, 0.4, 0.6, 0.7], [0, 1, 1, 0]);
-    const y2 = useTransform(scrollYProgress, [0.3, 0.5], [50, 0]);
-    const pointerEvents2 = useTransform(scrollYProgress, (v) => (v > 0.3 && v < 0.7) ? 'auto' : 'none');
+    // Scene 2: Middle (0.25 - 0.6)
+    // Text enters from right/bottom, stays, then exits top/left
+    const opacity2 = useTransform(scrollYProgress, [0.3, 0.4, 0.5, 0.6], [0, 1, 1, 0]);
+    const y2 = useTransform(scrollYProgress, [0.3, 0.4, 0.5, 0.6], [100, 0, 0, -100]);
+    const filter2 = useTransform(scrollYProgress, [0.3, 0.4, 0.5, 0.6], ["blur(20px)", "blur(0px)", "blur(0px)", "blur(20px)"]);
+    const pointerEvents2 = useTransform(scrollYProgress, (v) => (v > 0.3 && v < 0.6) ? 'auto' : 'none');
 
-    // Scene 3: End (0.6 - 0.9)
-    const opacity3 = useTransform(scrollYProgress, [0.65, 0.75, 0.95], [0, 1, 1]);
-    const y3 = useTransform(scrollYProgress, [0.65, 0.8], [50, 0]);
+    // Scene 3: End (0.6 - 1)
+    // Text enters from left/bottom
+    const opacity3 = useTransform(scrollYProgress, [0.65, 0.75, 0.9, 1], [0, 1, 1, 1]);
+    const y3 = useTransform(scrollYProgress, [0.65, 0.75], [100, 0]);
+    const filter3 = useTransform(scrollYProgress, [0.65, 0.75], ["blur(20px)", "blur(0px)"]);
 
     // Floating animation variants
     const floatVariant = {
         animate: {
-            y: [0, -20, 0],
+            y: [0, -15, 0],
             transition: {
                 duration: 6,
                 repeat: Infinity,
@@ -175,25 +194,13 @@ const Hero = ({ scrollYProgress }) => {
     return (
         <div style={{ height: '100vh', width: '100%', position: 'relative', overflow: 'hidden' }}>
 
-            {/* Ambient Background Elements */}
-            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0 }}>
-                <motion.div
-                    animate={{ x: [0, 100, 0], y: [0, 50, 0], opacity: [0.3, 0.6, 0.3] }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    style={{ position: 'absolute', top: '20%', left: '20%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(67, 97, 238, 0.2) 0%, transparent 70%)', filter: 'blur(40px)' }}
-                />
-                <motion.div
-                    animate={{ x: [0, -100, 0], y: [0, -50, 0], opacity: [0.3, 0.5, 0.3] }}
-                    transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                    style={{ position: 'absolute', bottom: '20%', right: '20%', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(123, 44, 191, 0.2) 0%, transparent 70%)', filter: 'blur(40px)' }}
-                />
-            </div>
-
             {/* Scene 1: Intro */}
             <motion.div
                 style={{
                     opacity: opacity1,
                     scale: scale1,
+                    filter: filter1,
+                    y: y1,
                     pointerEvents: pointerEvents1,
                     position: 'absolute',
                     top: 0,
@@ -208,25 +215,36 @@ const Hero = ({ scrollYProgress }) => {
                 }}
             >
                 <div className="container" style={{ textAlign: 'center' }}>
-                    <motion.p
+                    <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2, duration: 0.8 }}
-                        style={{ fontSize: '1.2rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '1rem', color: '#4361EE', fontWeight: 600 }}
+                        style={{
+                            display: 'inline-block',
+                            padding: '0.6rem 2rem',
+                            borderRadius: '50px',
+                            background: 'rgba(5, 5, 5, 0.5)',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            backdropFilter: 'blur(10px)',
+                            marginBottom: '1.5rem',
+                            boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+                        }}
                     >
-                        The Future of Video Editing
-                    </motion.p>
+                        <p style={{ fontSize: '1rem', letterSpacing: '0.25em', textTransform: 'uppercase', color: '#4361EE', fontWeight: 600, margin: 0, textShadow: '0 0 10px rgba(67, 97, 238, 0.5)' }}>
+                            The Future of Video Editing
+                        </p>
+                    </motion.div>
 
                     <motion.h1
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
                         className="gradient-text"
                         style={{
-                            fontSize: 'clamp(3rem, 8vw, 6.5rem)',
+                            fontSize: 'clamp(4rem, 9vw, 8rem)',
                             marginBottom: '1.5rem',
                             letterSpacing: '-0.03em',
-                            textShadow: '0 0 50px rgba(67, 97, 238, 0.4)'
+                            filter: 'drop-shadow(0 0 40px rgba(67, 97, 238, 0.5)) drop-shadow(0 10px 20px rgba(0,0,0,0.8))'
                         }}
                     >
                         PromptFlow AI.
@@ -236,7 +254,14 @@ const Hero = ({ scrollYProgress }) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.8, duration: 1 }}
-                        style={{ fontSize: '1.5rem', fontWeight: 500, maxWidth: '600px', margin: '0 auto', color: 'rgba(255,255,255,0.8)' }}
+                        style={{
+                            fontSize: '1.6rem',
+                            fontWeight: 500,
+                            maxWidth: '600px',
+                            margin: '0 auto',
+                            color: 'rgba(255,255,255,0.95)',
+                            textShadow: '0 2px 10px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.6)'
+                        }}
                     >
                         AI-Powered Prompt-Based Editing
                     </motion.div>
@@ -248,6 +273,7 @@ const Hero = ({ scrollYProgress }) => {
                 style={{
                     opacity: opacity2,
                     y: y2,
+                    filter: filter2,
                     pointerEvents: pointerEvents2,
                     position: 'absolute',
                     top: 0,
@@ -257,16 +283,22 @@ const Hero = ({ scrollYProgress }) => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'flex-end', // Align right
-                    paddingRight: '10%',
+                    paddingRight: '5%',
                     zIndex: 10
                 }}
             >
-                <div style={{ textAlign: 'right', maxWidth: '600px' }}>
-                    <h2 style={{ fontSize: '4.5rem', lineHeight: '1.05', marginBottom: '1.5rem', letterSpacing: '-0.02em' }}>
+                <div style={{
+                    textAlign: 'right',
+                    maxWidth: '650px',
+                    padding: '3rem',
+                    background: 'radial-gradient(ellipse at center, rgba(5,5,5,0.6) 0%, transparent 70%)',
+                    borderRadius: '20px'
+                }}>
+                    <h2 style={{ fontSize: '5.5rem', lineHeight: '1.05', marginBottom: '1.5rem', letterSpacing: '-0.02em', textShadow: '0 10px 40px rgba(0,0,0,0.9)' }}>
                         Skip the<br />
                         <span className="gradient-text">grunt work.</span>
                     </h2>
-                    <p style={{ fontSize: '1.2rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
+                    <p style={{ fontSize: '1.3rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.6, textShadow: '0 2px 15px rgba(0,0,0,0.9)' }}>
                         A natural-language video editor that lets creators skip hours of manual work by simply describing what they want.
                     </p>
                 </div>
@@ -277,6 +309,7 @@ const Hero = ({ scrollYProgress }) => {
                 style={{
                     opacity: opacity3,
                     y: y3,
+                    filter: filter3,
                     position: 'absolute',
                     top: 0,
                     left: 0,
@@ -285,12 +318,18 @@ const Hero = ({ scrollYProgress }) => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'flex-start', // Align left
-                    paddingLeft: '10%',
+                    paddingLeft: '5%',
                     zIndex: 10
                 }}
             >
-                <div style={{ textAlign: 'left', maxWidth: '650px' }}>
-                    <h2 style={{ fontSize: '4.5rem', lineHeight: '1.05', marginBottom: '1.5rem', letterSpacing: '-0.02em' }}>
+                <div style={{
+                    textAlign: 'left',
+                    maxWidth: '650px',
+                    padding: '3rem',
+                    background: 'radial-gradient(ellipse at center, rgba(5,5,5,0.6) 0%, transparent 70%)',
+                    borderRadius: '20px'
+                }}>
+                    <h2 style={{ fontSize: '5.5rem', lineHeight: '1.05', marginBottom: '1.5rem', letterSpacing: '-0.02em', textShadow: '0 10px 40px rgba(0,0,0,0.9)' }}>
                         Just <span style={{ color: '#A5B4FC' }}>ask.</span>
                     </h2>
 
@@ -301,23 +340,25 @@ const Hero = ({ scrollYProgress }) => {
                         style={{
                             padding: '2rem',
                             marginBottom: '1.5rem',
-                            background: 'rgba(5, 5, 5, 0.6)',
-                            border: '1px solid rgba(165, 180, 252, 0.2)'
+                            background: 'rgba(10, 10, 10, 0.75)',
+                            backdropFilter: 'blur(20px)',
+                            border: '1px solid rgba(165, 180, 252, 0.25)',
+                            boxShadow: '0 20px 50px rgba(0,0,0,0.5)'
                         }}
                     >
-                        <div style={{ fontFamily: 'monospace', fontSize: '1.3rem', color: '#A5B4FC', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ fontFamily: 'monospace', fontSize: '1.4rem', color: '#A5B4FC', display: 'flex', alignItems: 'center', gap: '15px' }}>
                             <span style={{ color: '#4361EE' }}>&gt;</span>
                             "Cut 0:13 to 0:15 and add fire when I wave my hand"
                             <motion.span
                                 animate={{ opacity: [1, 0] }}
                                 transition={{ duration: 0.8, repeat: Infinity }}
-                                style={{ width: '10px', height: '20px', background: '#A5B4FC', display: 'inline-block' }}
+                                style={{ width: '12px', height: '24px', background: '#A5B4FC', display: 'inline-block' }}
                             />
                         </div>
                     </motion.div>
 
-                    <p style={{ fontSize: '1.2rem', color: '#ccc', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', background: 'rgba(74, 222, 128, 0.2)', borderRadius: '50%', color: '#4ade80', fontSize: '14px' }}>✓</span>
+                    <p style={{ fontSize: '1.25rem', color: '#ccc', display: 'flex', alignItems: 'center', gap: '12px', textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>
+                        <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', background: 'rgba(74, 222, 128, 0.2)', borderRadius: '50%', color: '#4ade80', fontSize: '16px' }}>✓</span>
                         <span style={{ color: '#4ade80', fontWeight: 'bold' }}>Processed instantly.</span>
                     </p>
                 </div>
@@ -330,8 +371,8 @@ const Hero = ({ scrollYProgress }) => {
                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             >
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontSize: '0.75rem', opacity: 0.6, letterSpacing: '0.2em' }}>SCROLL TO EDIT</span>
-                    <div style={{ width: '1px', height: '40px', background: 'linear-gradient(to bottom, rgba(255,255,255,0.5), transparent)' }}></div>
+                    <span style={{ fontSize: '0.75rem', opacity: 0.8, letterSpacing: '0.25em', textShadow: '0 2px 5px rgba(0,0,0,0.8)' }}>SCROLL TO EDIT</span>
+                    <div style={{ width: '1px', height: '40px', background: 'linear-gradient(to bottom, rgba(255,255,255,0.7), transparent)' }}></div>
                 </div>
             </motion.div>
         </div>
@@ -365,91 +406,93 @@ const Features = () => {
             </div>
 
             {/* Section 1: The Solution */}
-            <div id="solution" className="container" style={{ minHeight: '90vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8rem 2rem' }}>
-                <motion.div
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: "-100px" }}
-                    variants={staggerContainer}
-                    style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6rem', alignItems: 'center', width: '100%' }}
-                >
-                    <div style={{ textAlign: 'left' }}>
-                        <motion.div variants={fadeInUp} style={{
-                            display: 'inline-block',
-                            padding: '0.5rem 1rem',
-                            borderRadius: '50px',
-                            background: 'rgba(67, 97, 238, 0.1)',
-                            border: '1px solid rgba(67, 97, 238, 0.3)',
-                            color: '#4361EE',
-                            fontSize: '0.8rem',
-                            fontWeight: 'bold',
-                            marginBottom: '1.5rem'
-                        }}>
-                            THE SOLUTION
-                        </motion.div>
-                        <motion.h2 variants={fadeInUp} style={{ fontSize: '3.5rem', marginBottom: '2rem', lineHeight: '1.1', letterSpacing: '-0.02em' }}>
-                            Natural-Language<br />
-                            <span className="gradient-text">Video Editing</span>
-                        </motion.h2>
-                        <motion.div variants={fadeInUp} style={{ width: '60px', height: '4px', background: 'linear-gradient(90deg, #4361EE, #7B2CBF)', marginBottom: '2rem', borderRadius: '2px' }}></motion.div>
-                        <motion.p variants={fadeInUp} style={{ fontSize: '1.2rem', lineHeight: '1.8', color: '#aaa' }}>
-                            PromptFlow AI is a natural-language video editor that lets creators skip hours of manual work by simply describing what they want. From smart cutting to automated VFX, just type your vision and let AI handle the execution.
-                        </motion.p>
-                    </div>
-
-                    {/* Command Card */}
+            <div id="solution" style={{ minHeight: '90vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8rem 0' }}>
+                <div className="container">
                     <motion.div
-                        variants={fadeInUp}
-                        className="glass-card"
-                        style={{
-                            height: 'auto',
-                            minHeight: '400px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            position: 'relative',
-                        }}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: "-100px" }}
+                        variants={staggerContainer}
+                        style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6rem', alignItems: 'center', width: '100%' }}
                     >
-                        <div style={{
-                            width: '100%',
-                            background: 'rgba(0,0,0,0.3)',
-                            padding: '1.5rem',
-                            borderRadius: '12px',
-                            border: '1px solid rgba(255,255,255,0.05)',
-                            marginBottom: '2rem'
-                        }}>
-                            <div style={{ fontSize: '0.8rem', color: '#666', marginBottom: '0.8rem', letterSpacing: '0.1em' }}>PROMPT</div>
-                            <div style={{ color: '#A5B4FC', fontFamily: 'monospace', fontSize: '1.1rem' }}>
-                                "Remove the silence and add subtitles"
-                                <motion.span
-                                    animate={{ opacity: [0, 1, 0] }}
-                                    transition={{ duration: 1, repeat: Infinity }}
-                                    style={{ display: 'inline-block', width: '2px', height: '1.2em', background: '#A5B4FC', marginLeft: '5px', verticalAlign: 'middle' }}
-                                />
-                            </div>
-                        </div>
-                        <motion.div
-                            initial={{ scale: 0.8, opacity: 0 }}
-                            whileInView={{ scale: 1, opacity: 1 }}
-                            transition={{ delay: 0.5, duration: 0.5 }}
-                            style={{
-                                display: 'flex',
-                                gap: '1rem',
-                                color: '#4ade80',
-                                fontSize: '1rem',
-                                alignItems: 'center',
-                                background: 'rgba(74, 222, 128, 0.1)',
-                                padding: '0.8rem 1.5rem',
+                        <div style={{ textAlign: 'left' }}>
+                            <motion.div variants={fadeInUp} style={{
+                                display: 'inline-block',
+                                padding: '0.5rem 1rem',
                                 borderRadius: '50px',
-                                border: '1px solid rgba(74, 222, 128, 0.2)'
+                                background: 'rgba(67, 97, 238, 0.1)',
+                                border: '1px solid rgba(67, 97, 238, 0.3)',
+                                color: '#4361EE',
+                                fontSize: '0.8rem',
+                                fontWeight: 'bold',
+                                marginBottom: '1.5rem'
+                            }}>
+                                THE SOLUTION
+                            </motion.div>
+                            <motion.h2 variants={fadeInUp} style={{ fontSize: '3.5rem', marginBottom: '2rem', lineHeight: '1.1', letterSpacing: '-0.02em' }}>
+                                Natural-Language<br />
+                                <span className="gradient-text">Video Editing</span>
+                            </motion.h2>
+                            <motion.div variants={fadeInUp} style={{ width: '60px', height: '4px', background: 'linear-gradient(90deg, #4361EE, #7B2CBF)', marginBottom: '2rem', borderRadius: '2px' }}></motion.div>
+                            <motion.p variants={fadeInUp} style={{ fontSize: '1.2rem', lineHeight: '1.8', color: '#aaa' }}>
+                                PromptFlow AI is a natural-language video editor that lets creators skip hours of manual work by simply describing what they want. From smart cutting to automated VFX, just type your vision and let AI handle the execution.
+                            </motion.p>
+                        </div>
+
+                        {/* Command Card */}
+                        <motion.div
+                            variants={fadeInUp}
+                            className="glass-card"
+                            style={{
+                                height: 'auto',
+                                minHeight: '400px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                position: 'relative',
                             }}
                         >
-                            <span>✓</span>
-                            <span style={{ fontWeight: 600 }}>Processing Complete</span>
+                            <div style={{
+                                width: '100%',
+                                background: 'rgba(0,0,0,0.3)',
+                                padding: '1.5rem',
+                                borderRadius: '12px',
+                                border: '1px solid rgba(255,255,255,0.05)',
+                                marginBottom: '2rem'
+                            }}>
+                                <div style={{ fontSize: '0.8rem', color: '#666', marginBottom: '0.8rem', letterSpacing: '0.1em' }}>PROMPT</div>
+                                <div style={{ color: '#A5B4FC', fontFamily: 'monospace', fontSize: '1.1rem' }}>
+                                    "Remove the silence and add subtitles"
+                                    <motion.span
+                                        animate={{ opacity: [0, 1, 0] }}
+                                        transition={{ duration: 1, repeat: Infinity }}
+                                        style={{ display: 'inline-block', width: '2px', height: '1.2em', background: '#A5B4FC', marginLeft: '5px', verticalAlign: 'middle' }}
+                                    />
+                                </div>
+                            </div>
+                            <motion.div
+                                initial={{ scale: 0.8, opacity: 0 }}
+                                whileInView={{ scale: 1, opacity: 1 }}
+                                transition={{ delay: 0.5, duration: 0.5 }}
+                                style={{
+                                    display: 'flex',
+                                    gap: '1rem',
+                                    color: '#4ade80',
+                                    fontSize: '1rem',
+                                    alignItems: 'center',
+                                    background: 'rgba(74, 222, 128, 0.1)',
+                                    padding: '0.8rem 1.5rem',
+                                    borderRadius: '50px',
+                                    border: '1px solid rgba(74, 222, 128, 0.2)'
+                                }}
+                            >
+                                <span>✓</span>
+                                <span style={{ fontWeight: 600 }}>Processing Complete</span>
+                            </motion.div>
                         </motion.div>
                     </motion.div>
-                </motion.div>
+                </div>
             </div>
 
             {/* Section 2: Efficiency / Creator Impact */}
