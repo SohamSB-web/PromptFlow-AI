@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useTransform } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import ScrollSequence from '../components/ScrollSequence';
 
 // --- Navbar Component ---
 const Navbar = () => {
     const [activeSection, setActiveSection] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -147,6 +149,7 @@ const Navbar = () => {
                         }}
                         className="btn-primary"
                         style={{ padding: '0.7rem 1.5rem', fontSize: '0.9rem' }}
+                        onClick={() => navigate('/login')}
                     >
                         Join Waitlist
                     </motion.button>
@@ -381,6 +384,8 @@ const Hero = ({ scrollYProgress }) => {
 
 // --- Features Component ---
 const Features = () => {
+    const navigate = useNavigate();
+
     const fadeInUp = {
         hidden: { opacity: 0, y: 60 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
@@ -553,7 +558,11 @@ const Features = () => {
                                 </div>
                             </div>
 
-                            <button className="btn-primary" style={{ width: '100%', fontSize: '1.1rem' }}>
+                            <button
+                                className="btn-primary"
+                                style={{ width: '100%', fontSize: '1.1rem' }}
+                                onClick={() => navigate('/login')}
+                            >
                                 Join Waitlist
                             </button>
                         </div>
@@ -592,7 +601,11 @@ const Features = () => {
             <footer id="contact" style={{ background: '#020204', color: 'white', padding: '5rem 0 2rem 0', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                 <div className="container" style={{ textAlign: 'center', marginBottom: '5rem' }}>
                     <p style={{ letterSpacing: '0.2em', fontSize: '0.9rem', opacity: 0.5, marginBottom: '2rem' }}>JOIN THE REVOLUTION</p>
-                    <button className="btn-primary" style={{ padding: '1.2rem 4rem', fontSize: '1.2rem' }}>
+                    <button
+                        className="btn-primary"
+                        style={{ padding: '1.2rem 4rem', fontSize: '1.2rem' }}
+                        onClick={() => navigate('/login')}
+                    >
                         Get Early Access →
                     </button>
                 </div>
