@@ -7,7 +7,7 @@ const ScrollSequence = ({ children }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const containerRef = useRef(null);
 
-  const frameCount = 200; // Total frames
+  const frameCount = 281; // Total frames
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
