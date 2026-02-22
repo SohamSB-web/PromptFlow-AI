@@ -374,7 +374,7 @@ const Hero = ({ scrollYProgress }) => {
                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             >
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontSize: '0.75rem', opacity: 0.8, letterSpacing: '0.25em', textShadow: '0 2px 5px rgba(0,0,0,0.8)' }}>SCROLL TO EDIT</span>
+                    <span style={{ fontSize: '0.75rem', opacity: 0.8, letterSpacing: '0.25em', textShadow: '0 2px 5px rgba(0,0,0,0.8)' }}>SCROLL TO EXPLORE</span>
                     <div style={{ width: '1px', height: '40px', background: 'linear-gradient(to bottom, rgba(255,255,255,0.7), transparent)' }}></div>
                 </div>
             </motion.div>

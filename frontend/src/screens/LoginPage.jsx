@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
@@ -9,8 +9,11 @@ const IMAGES = [
 ];
 
 export default function LoginPage() {
-    const [isLogin, setIsLogin] = useState(false); // Default to sign up based on reference
+    const [isLogin, setIsLogin] = useState(true); // Default to login tab
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [activeVideo, setActiveVideo] = useState(1);
+    const video1Ref = useRef(null);
+    const video2Ref = useRef(null);
 
     // Auto-scroll images every 3 seconds
     useEffect(() => {
@@ -20,18 +23,72 @@ export default function LoginPage() {
         return () => clearInterval(interval);
     }, []);
 
+    // Dual video crossfade loop
+    useEffect(() => {
+        let animationFrameId;
+        const checkVideoTime = () => {
+            const currentVideo = activeVideo === 1 ? video1Ref.current : video2Ref.current;
+            const nextVideo = activeVideo === 1 ? video2Ref.current : video1Ref.current;
+
+            if (currentVideo && nextVideo && currentVideo.duration) {
+                // Time until end to trigger crossfade (e.g., 0.5s)
+                if (currentVideo.currentTime >= currentVideo.duration - 0.5) {
+                    // Start playing the other video from the beginning
+                    nextVideo.currentTime = 0;
+                    const playPromise = nextVideo.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(() => { });
+                    }
+                    setActiveVideo(activeVideo === 1 ? 2 : 1);
+                }
+            }
+            animationFrameId = requestAnimationFrame(checkVideoTime);
+        };
+
+        animationFrameId = requestAnimationFrame(checkVideoTime);
+
+        return () => {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        };
+    }, [activeVideo]);
+
     const toggleMode = () => setIsLogin(!isLogin);
 
     return (
-        <div className="login-wrapper">
+        <motion.div layout transition={{ type: 'spring', bounce: 0.05, duration: 0.8 }} className="login-wrapper">
+            {/* Background Videos for Seamless Loop */}
+            <video
+                ref={video1Ref}
+                autoPlay
+                muted
+                playsInline
+                className={`login-bg-video ${activeVideo === 1 ? 'visible' : 'hidden'}`}
+            >
+                <source src="/final.mp4" type="video/mp4" />
+            </video>
+            <video
+                ref={video2Ref}
+                muted
+                playsInline
+                className={`login-bg-video ${activeVideo === 2 ? 'visible' : 'hidden'}`}
+            >
+                <source src="/final.mp4" type="video/mp4" />
+            </video>
+            <div className="login-bg-overlay"></div>
+
             <motion.div
+                layout
                 className="login-grid"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
+                transition={{
+                    layout: { type: 'spring', bounce: 0.05, duration: 0.8 },
+                    opacity: { duration: 0.5, ease: "easeOut" },
+                    scale: { duration: 0.5, ease: "easeOut" }
+                }}
             >
-                {/* Left Panel: Image Slider */}
-                <div className="login-image-panel">
+                {/* Left Panel: Image Slider & Context */}
+                <motion.div layout transition={{ type: 'spring', bounce: 0.05, duration: 0.8 }} className="login-image-panel">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={currentImageIndex}
@@ -49,17 +106,40 @@ export default function LoginPage() {
                         {/* Top Context */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div className="amu-logo">
-                                AMU
+                                PromptFlow AI
                             </div>
-                            <Link to="/" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                Back to website <span>→</span>
+                            <Link
+                                to="/"
+                                style={{
+                                    color: 'white',
+                                    textDecoration: 'none',
+                                    fontSize: '0.85rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    background: 'rgba(255, 255, 255, 0.1)',
+                                    backdropFilter: 'blur(10px)',
+                                    WebkitBackdropFilter: 'blur(10px)',
+                                    padding: '0.5rem 1rem',
+                                    borderRadius: '20px',
+                                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                                    transition: 'background 0.3s ease'
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)'}
+                                onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'}
+                            >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: 'rotate(180deg)' }}>
+                                    <path d="M5 12h14"></path>
+                                    <path d="M12 5l7 7-7 7"></path>
+                                </svg>
+                                Back to website
                             </Link>
                         </div>
 
                         {/* Bottom Context */}
                         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                            <h2 style={{ fontSize: '2.5rem', fontWeight: 500, lineHeight: 1.2, marginBottom: '2rem' }}>
-                                Capturing Moments,<br />Creating Memories
+                            <h2 style={{ fontSize: '2rem', fontWeight: 500, lineHeight: 1.2, marginBottom: '2rem', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
+                                Natural-language video editing
                             </h2>
                             <div className="slider-indicators">
                                 {IMAGES.map((_, idx) => (
@@ -73,67 +153,143 @@ export default function LoginPage() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Right Panel: Form */}
-                <div className="login-form-panel">
+                <motion.div
+                    layout
+                    className="login-form-panel"
+                    transition={{ type: 'spring', bounce: 0.05, duration: 0.8 }}
+                >
                     <div style={{ marginBottom: '2.5rem' }}>
-                        <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', fontWeight: 600 }}>
-                            {isLogin ? 'Log in' : 'Create an account'}
-                        </h2>
+                        <motion.h2 layout transition={{ type: 'spring', bounce: 0.05, duration: 0.8 }} style={{ fontSize: '2.5rem', marginBottom: '0.5rem', fontWeight: 600 }}>
+                            <AnimatePresence mode="wait" initial={false}>
+                                <motion.span
+                                    key={isLogin ? 'login-title' : 'signup-title'}
+                                    initial={{ opacity: 0, y: 15 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -15 }}
+                                    transition={{ duration: 0.3 }}
+                                    style={{ display: 'inline-block' }}
+                                >
+                                    {isLogin ? 'Log in' : 'Create an account'}
+                                </motion.span>
+                            </AnimatePresence>
+                        </motion.h2>
                         <p style={{ color: 'var(--ref-text-secondary)', fontSize: '0.95rem' }}>
                             {isLogin ? "Don't have an account? " : "Already have an account? "}
                             <span onClick={toggleMode} style={{ color: 'var(--ref-primary)', cursor: 'pointer', textDecoration: 'underline' }}>
-                                {isLogin ? 'Sign up' : 'Log in'}
+                                <AnimatePresence mode="wait" initial={false}>
+                                    <motion.span
+                                        key={isLogin ? 'login-toggle' : 'signup-toggle'}
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.2 }}
+                                        style={{ display: 'inline-block' }}
+                                    >
+                                        {isLogin ? 'Sign up' : 'Log in'}
+                                    </motion.span>
+                                </AnimatePresence>
                             </span>
                         </p>
                     </div>
 
-                    <form onSubmit={(e) => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                    <motion.form
+                        layout
+                        transition={{ type: 'spring', bounce: 0.05, duration: 0.8 }}
+                        onSubmit={(e) => e.preventDefault()}
+                        style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
+                    >
+                        <AnimatePresence initial={false}>
+                            {!isLogin && (
+                                <motion.div
+                                    layout
+                                    style={{ overflow: 'hidden' }}
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ type: 'spring', bounce: 0.05, duration: 0.8 }}
+                                >
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem', paddingBottom: '1.2rem' }}>
+                                        <input type="text" className="ref-input" placeholder="First name" defaultValue="Fletcher" />
+                                        <input type="text" className="ref-input" placeholder="Last name" />
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
 
-                        {!isLogin && (
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem' }}>
-                                <input type="text" className="ref-input" placeholder="First name" defaultValue="Fletcher" />
-                                <input type="text" className="ref-input" placeholder="Last name" />
-                            </div>
-                        )}
+                        <motion.input layout transition={{ type: 'spring', bounce: 0.05, duration: 0.8 }} type="email" className="ref-input" placeholder="Email" style={{ marginBottom: '1.2rem' }} />
 
-                        <input type="email" className="ref-input" placeholder="Email" />
+                        <AnimatePresence initial={false}>
+                            {isLogin && (
+                                <motion.div
+                                    layout
+                                    style={{ overflow: 'hidden' }}
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ type: 'spring', bounce: 0.05, duration: 0.8 }}
+                                >
+                                    <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '0.2rem', paddingBottom: '1.2rem' }}>
+                                        <a href="#" style={{ fontSize: '0.85rem', color: 'var(--ref-primary)', textDecoration: 'none' }}>Forgot password?</a>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
 
-                        {isLogin && (
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.2rem', marginTop: '-0.5rem' }}>
-                                <a href="#" style={{ fontSize: '0.85rem', color: 'var(--ref-primary)', textDecoration: 'none' }}>Forgot password?</a>
-                            </div>
-                        )}
-                        <div style={{ position: 'relative' }}>
-                            <input type="password" className="ref-input" placeholder="Enter your password" />
-                            {/* Eye icon placeholder */}
+                        <motion.div layout transition={{ type: 'spring', bounce: 0.05, duration: 0.8 }} style={{ position: 'relative', marginBottom: '1.2rem' }}>
+                            <input type="password" className="ref-input" placeholder={isLogin ? "Enter your password" : "Create a password"} />
                             <div style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--ref-text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>
                                 </svg>
                             </div>
-                        </div>
+                        </motion.div>
 
-                        {!isLogin && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem' }}>
-                                <input type="checkbox" id="terms" className="custom-checkbox" defaultChecked />
-                                <label htmlFor="terms" style={{ fontSize: '0.85rem', color: 'var(--ref-text-secondary)', cursor: 'pointer' }}>
-                                    I agree to the <span style={{ textDecoration: 'underline' }}>Terms & Conditions</span>
-                                </label>
-                            </div>
-                        )}
+                        <AnimatePresence initial={false}>
+                            {!isLogin && (
+                                <motion.div
+                                    layout
+                                    style={{ overflow: 'hidden' }}
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ type: 'spring', bounce: 0.05, duration: 0.8 }}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', paddingTop: '0.2rem', paddingBottom: '1.2rem' }}>
+                                        <input type="checkbox" id="terms" className="custom-checkbox" defaultChecked />
+                                        <label htmlFor="terms" style={{ fontSize: '0.85rem', color: 'var(--ref-text-secondary)', cursor: 'pointer' }}>
+                                            I agree to the <span style={{ textDecoration: 'underline' }}>Terms & Conditions</span>
+                                        </label>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
 
                         <motion.button
+                            layout
+                            transition={{ type: 'spring', bounce: 0.05, duration: 0.8 }}
                             whileHover={{ scale: 1.01 }}
                             whileTap={{ scale: 0.98 }}
                             className="ref-btn"
                             style={{ marginTop: '0.5rem' }}
                         >
-                            {isLogin ? 'Log in' : 'Create account'}
+                            <AnimatePresence mode="wait" initial={false}>
+                                <motion.span
+                                    key={isLogin ? 'login-btn' : 'signup-btn'}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.2 }}
+                                    style={{ display: 'inline-block' }}
+                                >
+                                    {isLogin ? 'Log in' : 'Create account'}
+                                </motion.span>
+                            </AnimatePresence>
                         </motion.button>
-                    </form>
+                    </motion.form>
 
                     <div className="divider">Or register with</div>
 
@@ -154,8 +310,8 @@ export default function LoginPage() {
                             Apple
                         </button>
                     </div>
-                </div>
+                </motion.div>
             </motion.div>
-        </div>
+        </motion.div>
     );
 }
