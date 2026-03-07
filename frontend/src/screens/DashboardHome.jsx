@@ -17,6 +17,7 @@ function DashboardHome() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('Home');
   const [profileOpen, setProfileOpen] = useState(false);
+  const [viewMode, setViewMode] = useState('grid');
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [profileForm, setProfileForm] = useState({
     firstName: 'John',
@@ -34,6 +35,13 @@ function DashboardHome() {
 
   return (
     <div className="dashboard-wrapper">
+      {/* Dynamic Background for Glassmorphism */}
+      <div className="glass-background-orbs">
+        <div className="orb orb-1"></div>
+        <div className="orb orb-2"></div>
+        <div className="orb orb-3"></div>
+      </div>
+
       {/* Top Menu Bar */}
       <div className="dashboard-top-menu">
         <div className="menu-logo">
@@ -47,16 +55,17 @@ function DashboardHome() {
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
            </div>
            
-           <AnimatePresence>
-             {profileOpen && (
-               <motion.div 
-                 className="profile-dropdown"
-                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                 transition={{ duration: 0.15 }}
-               >
-                 <div className="dropdown-item">Account Settings</div>
+          <AnimatePresence>
+            {profileOpen && (
+              <motion.div 
+                className="profile-dropdown"
+                initial={{ opacity: 0, y: 15, scale: 0.9, rotateX: 10 }}
+                animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+                exit={{ opacity: 0, y: 15, scale: 0.9, rotateX: 10 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                style={{ transformOrigin: "top right" }}
+              >
+                <div className="dropdown-item">Account Settings</div>
                  <div className="dropdown-item">Switch Account...</div>
                  <div className="dropdown-divider"></div>
                  <div className="dropdown-item text-danger" onClick={() => navigate('/login')}>Logout</div>
@@ -70,44 +79,67 @@ function DashboardHome() {
         {/* Sidebar */}
         <div className="dashboard-sidebar">
           <div className="sidebar-actions">
-            <button className="primary-glass-btn" onClick={() => setIsModalOpen(true)}>
+            <motion.button 
+               className="primary-glass-btn" 
+               onClick={() => setIsModalOpen(true)}
+               whileHover={{ scale: 1.02 }}
+               whileTap={{ scale: 0.95 }}
+            >
               New file
-            </button>
-            <button className="secondary-glass-btn">
+            </motion.button>
+            <motion.button 
+               className="secondary-glass-btn"
+               whileHover={{ scale: 1.02 }}
+               whileTap={{ scale: 0.95 }}
+            >
               Open
-            </button>
+            </motion.button>
           </div>
           
           <nav className="sidebar-nav">
-             <div 
+             <motion.div 
                className={`nav-item ${activeTab === 'Home' ? 'active' : ''}`}
                onClick={() => setActiveTab('Home')}
+               whileHover={{ x: 4 }}
+               whileTap={{ scale: 0.98 }}
              >
                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                Home
-             </div>
-             <div 
+             </motion.div>
+             <motion.div 
                className={`nav-item ${activeTab === 'Account' ? 'active' : ''}`}
                onClick={() => setActiveTab('Account')}
+               whileHover={{ x: 4 }}
+               whileTap={{ scale: 0.98 }}
              >
                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                Account
-             </div>
-             <div 
+             </motion.div>
+             <motion.div 
                className={`nav-item ${activeTab === 'Subscription' ? 'active' : ''}`}
                onClick={() => setActiveTab('Subscription')}
+               whileHover={{ x: 4 }}
+               whileTap={{ scale: 0.98 }}
              >
                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
                Subscription
-             </div>
+             </motion.div>
           </nav>
         </div>
 
         {/* Main Area */}
-        <div className="dashboard-main">
-          {activeTab === 'Home' ? (
-            <>
-              <h1 className="welcome-text">Welcome to PromptFlow AI</h1>
+        <div className="dashboard-main premium-scroll">
+          <AnimatePresence mode="wait">
+            {activeTab === 'Home' && (
+              <motion.div 
+                key="home"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className="tab-content-wrapper"
+              >
+                <h1 className="welcome-text">Welcome to PromptFlow AI</h1>
 
               <div className="recent-section">
                 <div className="recent-header">
@@ -120,13 +152,26 @@ function DashboardHome() {
                        <input type="text" placeholder="Filter Recent Files" />
                      </div>
                      <div className="view-toggles">
-                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                       <div className={`view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`} onClick={() => setViewMode('list')}>
+                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                       </div>
+                       <div className={`view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`} onClick={() => setViewMode('grid')}>
+                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                       </div>
                      </div>
                   </div>
                 </div>
 
-                <div className="recent-grid">
+                <AnimatePresence mode="wait">
+                {viewMode === 'grid' ? (
+                <motion.div 
+                  className="recent-grid" 
+                  key="grid-view"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
                   {recentFiles.map((file, index) => (
                     <motion.div 
                       className="recent-card" 
@@ -137,12 +182,16 @@ function DashboardHome() {
                       whileHover={{ y: -5, boxShadow: `0 10px 20px -10px ${file.color}40`, borderColor: `${file.color}80` }}
                     >
                       <div className="card-thumbnail-container">
-                        <div className="card-thumbnail" style={{ background: `linear-gradient(135deg, ${file.color}20, ${file.color}40)`, border: `1px solid ${file.color}40` }}>
-                           {/* Abstract placeholder shape based on type */}
+                        <motion.div 
+                           className="card-thumbnail" 
+                           style={{ background: `linear-gradient(135deg, ${file.color}20, ${file.color}40)` }}
+                           whileHover={{ scale: 1.05 }}
+                           transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        >
                            {file.type === 'video' && <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={file.color} strokeWidth="1.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>}
                            {file.type === 'image' && <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={file.color} strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>}
                            {file.type === 'audio' && <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={file.color} strokeWidth="1.5"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1v-3a2 2 0 0 1 2-2h1zM3 19a2 2 0 0 0 2 2h1v-3a2 2 0 0 0-2-2H3z"></path></svg>}
-                        </div>
+                        </motion.div>
                       </div>
                       <div className="card-info">
                         <h3 className="card-title">{file.name}</h3>
@@ -150,17 +199,59 @@ function DashboardHome() {
                       </div>
                     </motion.div>
                   ))}
-                </div>
+                </motion.div>
+                ) : (
+                <motion.div 
+                  className="recent-list" 
+                  key="list-view"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="list-header">
+                    <span className="list-col-name">Name</span>
+                    <span className="list-col-type">Type</span>
+                    <span className="list-col-time">Modified</span>
+                  </div>
+                  {recentFiles.map((file, index) => (
+                    <motion.div 
+                      className="list-row" 
+                      key={file.id}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.03 }}
+                      whileHover={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
+                    >
+                      <div className="list-col-name">
+                        <div className="list-icon" style={{ color: file.color }}>
+                          {file.type === 'video' && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>}
+                          {file.type === 'image' && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>}
+                          {file.type === 'audio' && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1v-3a2 2 0 0 1 2-2h1zM3 19a2 2 0 0 0 2 2h1v-3a2 2 0 0 0-2-2H3z"></path></svg>}
+                        </div>
+                        <span>{file.name}</span>
+                      </div>
+                      <span className="list-col-type">{file.type.charAt(0).toUpperCase() + file.type.slice(1)}</span>
+                      <span className="list-col-time">{file.time}</span>
+                    </motion.div>
+                  ))}
+                </motion.div>
+                )}
+                </AnimatePresence>
               </div>
-            </>
-          ) : activeTab === 'Account' ? (
-            <motion.div 
-               className="account-section"
-               initial={{ opacity: 0, x: 20 }}
-               animate={{ opacity: 1, x: 0 }}
-               transition={{ duration: 0.3 }}
-            >
-              <h1 className="welcome-text" style={{ textAlign: 'left', marginBottom: '1.5rem' }}>Account Information</h1>
+              </motion.div>
+            )}
+            
+            {activeTab === 'Account' && (
+              <motion.div 
+                key="account"
+                className="account-section tab-content-wrapper"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+              >
+                <h1 className="welcome-text" style={{ textAlign: 'left', marginBottom: '1.5rem' }}>Account Information</h1>
               <div className="account-card" style={{ display: 'block' }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '2rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
@@ -240,15 +331,19 @@ function DashboardHome() {
                   </div>
                 </div>
               </div>
-            </motion.div>
-          ) : activeTab === 'Subscription' ? (
-            <motion.div 
-              className="account-section"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <h1 className="welcome-text" style={{ textAlign: 'left', marginBottom: '1.5rem' }}>Subscription Plans</h1>
+              </motion.div>
+            )}
+            
+            {activeTab === 'Subscription' && (
+              <motion.div 
+                 key="subscription"
+                 className="account-section tab-content-wrapper"
+                 initial={{ opacity: 0, y: 15 }}
+                 animate={{ opacity: 1, y: 0 }}
+                 exit={{ opacity: 0, y: -15 }}
+                 transition={{ duration: 0.3, ease: 'easeOut' }}
+              >
+                <h1 className="welcome-text" style={{ textAlign: 'left', marginBottom: '1.5rem' }}>Subscription Plans</h1>
               <div className="account-card" style={{ display: 'block' }}>
                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                    <div>
@@ -298,8 +393,9 @@ function DashboardHome() {
                    </div>
                  </div>
               </div>
-            </motion.div>
-          ) : null}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
