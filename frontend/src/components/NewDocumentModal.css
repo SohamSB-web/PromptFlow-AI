@@ -1,0 +1,407 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-container {
+  width: 950px;
+  height: 650px;
+  background: #1e1e1e; /* Photoshop default dark background */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(123, 44, 191, 0.15); /* Keep some purple glow */
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: var(--accent-purple); /* Top blueish/purple bar like the reference */
+  color: white;
+}
+
+.modal-header h2 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.close-icon-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-icon-btn:hover {
+  opacity: 1;
+}
+
+.modal-tabs {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: #252525;
+}
+
+.tab-item {
+  padding: 1rem 0;
+  font-size: 0.9rem;
+  color: #a0a0a0;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+  font-weight: 500;
+}
+
+.tab-item:hover {
+  color: white;
+}
+
+.tab-item.active {
+  color: white;
+  font-weight: 500;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent-blue);
+}
+
+.modal-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Left Pane */
+.presets-pane {
+  flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pane-title {
+  font-size: 0.8rem;
+  color: var(--ref-text-secondary);
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.presets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-auto-rows: min-content;
+  gap: 1rem;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 0.5rem;
+}
+
+.preset-card {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  height: 180px; /* Fixed standard height */
+  box-sizing: border-box;
+}
+
+.preset-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.preset-card.active {
+  border-color: var(--accent-blue);
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: inset 0 0 0 1px var(--accent-blue);
+}
+
+.preset-icon {
+  margin-bottom: 1rem;
+  color: var(--ref-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+}
+
+.preset-card.active .preset-icon {
+  color: var(--accent-blue);
+}
+
+.active-rect {
+  fill: var(--accent-blue);
+  fill-opacity: 0.1;
+  stroke: var(--accent-blue);
+  stroke-width: 1.5;
+}
+
+.preset-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 0.2rem;
+}
+
+.preset-dim {
+  font-size: 0.75rem;
+  color: var(--ref-text-secondary);
+}
+
+.no-presets {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ref-text-secondary);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.preset-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  margin-top: 1rem;
+}
+
+.preset-search input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.preset-search input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+  font-style: italic;
+}
+
+.search-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.3rem 1rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Right Pane */
+.details-pane {
+  width: 280px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  background: #202020;
+  overflow-y: auto;
+}
+
+.preset-name-input {
+  width: 100%;
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: white;
+  font-size: 0.85rem;
+  padding: 0.6rem;
+  outline: none;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.preset-name-input:focus {
+  border-color: var(--accent-blue);
+}
+
+.detail-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  align-items: flex-end; /* Align bottom of inputs */
+}
+
+.detail-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.detail-col label, .detail-group label {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+.number-input, .select-row select, .detail-col select, .orientation-toggles {
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 0 0.5rem; /* Removed vertical padding to use flex alignment */
+  color: white;
+  height: 32px; /* Uniform height */
+  display: flex;
+  align-items: center; /* Center items vertically */
+  box-sizing: border-box;
+}
+
+.number-input input {
+  width: 100%;
+  height: 100%; /* Take full height of container */
+  background: transparent;
+  border: none;
+  color: white;
+  outline: none;
+  font-size: 0.85rem;
+  display: block;
+  -moz-appearance: textfield; /* Firefox */
+}
+
+/* Hide WebKit spin buttons */
+.number-input input::-webkit-outer-spin-button,
+.number-input input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.detail-col select {
+  font-size: 0.8rem;
+  outline: none;
+  appearance: none; /* Hide default arrow to look more custom */
+}
+
+/* Specific margins for compact spacing */
+.mt-2 { margin-top: 1rem; }
+
+.select-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.flex-1 { flex: 1; }
+.flex-2 { flex: 2; }
+
+.orientation-toggles {
+  display: flex;
+  gap: 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+}
+
+.orientation-toggles button {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--ref-text-secondary);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s;
+  height: 100%;
+}
+
+.orientation-toggles button:first-child {
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.orientation-toggles button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.orientation-toggles button.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5) inset;
+}
+
+.color-preview {
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.advanced-options {
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+  color: var(--ref-text-secondary);
+  cursor: pointer;
+  padding-bottom: 0.5rem; 
+}
+
+.advanced-options:hover {
+  color: white;
+}
+
+.advanced-options-content .select-row {
+  width: 100%;
+}
+
+.advanced-options-content select {
+  width: 100%;
+}
+
+/* Modal Footer */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: #1e1e1e;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.modal-footer button {
+  min-width: 100px;
+  border-radius: 50px; /* Use rounded standard buttons */
+  font-size: 0.9rem;
+}
