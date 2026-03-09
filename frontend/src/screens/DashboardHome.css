@@ -341,16 +341,13 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  position: relative; /* Essential for absolute positioning of exiting animated tabs */
-}
-
-.premium-scroll {
-  overflow-y: hidden;
+  position: relative;
 }
 
 .tab-content-wrapper {
   width: 100%;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
 }
@@ -369,10 +366,11 @@
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
-  flex: 1; /* Take up remaining height */
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Prevent section itself from scrolling */
+  overflow: hidden;
 }
 
 .recent-header {
@@ -466,10 +464,11 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 2rem;
-  overflow-y: auto;
-  padding: 0.5rem 1rem 3rem 0; /* Top padding for hover lift room */
+  padding: 0.5rem 1rem 3rem 0;
   margin-bottom: 1rem;
+  overflow-y: auto;
   flex: 1;
+  min-height: 0;
 }
 
 /* Custom Scrollbar for the grid to match the dark theme */
@@ -495,10 +494,11 @@
 .recent-list {
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  flex: 1;
   padding-right: 0.5rem;
   padding-bottom: 3rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .recent-list::-webkit-scrollbar {
@@ -631,10 +631,11 @@
   max-width: 900px;
   width: 100%;
   margin: 0 auto;
-  overflow-y: auto;
-  height: 100%;
   padding-right: 1.5rem;
   padding-bottom: 4rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 /* Custom Scrollbar for Account Section */
@@ -973,4 +974,20 @@
   .dashboard-main {
     padding: 2rem;
   }
+}
+
+/* Custom Scrollbar for Dashboard Main */
+.dashboard-main::-webkit-scrollbar {
+  width: 6px;
+}
+.dashboard-main::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+.dashboard-main::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+.dashboard-main::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
