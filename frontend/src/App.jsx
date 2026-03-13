@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import LandingPage from './screens/LandingPage';
 import LoginPage from './screens/LoginPage';
 import DashboardHome from './screens/DashboardHome';
+import Workspace from './screens/Workspace';
 
 function App() {
   const lenisRef = useRef();
@@ -32,6 +33,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/dashboard" element={<DashboardHome />} />
+            <Route path="/workspace" element={<Workspace />} />
           </Routes>
         </div>
       </Router>

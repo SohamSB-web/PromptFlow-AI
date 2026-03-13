@@ -27,10 +27,9 @@ function DashboardHome() {
   });
   const navigate = useNavigate();
 
-  const handleCreateDocument = () => {
-    // Navigate to actual editor here
+  const handleCreateDocument = (presetData) => {
     setIsModalOpen(false);
-    // navigate('/editor'); // Placeholder for future routing
+    navigate('/workspace', { state: { presetData } });
   };
 
   return (
